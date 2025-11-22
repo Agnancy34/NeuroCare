@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Stroke Prediction - Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 25%, #415a77 50%, #1b263b 75%, #0d1b2a 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Brain/stroke pattern overlay - neural network style */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                /* Neural network nodes */
+                radial-gradient(circle at 20% 20%, rgba(102, 126, 234, 0.3) 0%, transparent 8%),
+                radial-gradient(circle at 80% 30%, rgba(118, 75, 162, 0.25) 0%, transparent 8%),
+                radial-gradient(circle at 50% 70%, rgba(102, 126, 234, 0.2) 0%, transparent 8%),
+                radial-gradient(circle at 30% 80%, rgba(118, 75, 162, 0.25) 0%, transparent 8%),
+                radial-gradient(circle at 70% 60%, rgba(102, 126, 234, 0.2) 0%, transparent 8%),
+                /* Stroke/blood vessel patterns */
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 40px,
+                    rgba(255, 100, 100, 0.03) 40px,
+                    rgba(255, 100, 100, 0.03) 41px
+                ),
+                repeating-linear-gradient(
+                    -45deg,
+                    transparent,
+                    transparent 40px,
+                    rgba(102, 126, 234, 0.03) 40px,
+                    rgba(102, 126, 234, 0.03) 41px
+                );
+            background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 200px 200px, 200px 200px;
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 0;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Brain icon decorations */
+        body::after {
+            content: '🧠';
+            position: fixed;
+            font-size: 200px;
+            opacity: 0.08;
+            top: 10%;
+            left: 5%;
+            transform: rotate(-15deg);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Additional medical icon */
+        .medical-decoration {
+            position: fixed;
+            font-size: 150px;
+            opacity: 0.06;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .medical-decoration-1 {
+            top: 60%;
+            right: 10%;
+            transform: rotate(20deg);
+        }
+
+        .medical-decoration-2 {
+            bottom: 15%;
+            left: 10%;
+            transform: rotate(-10deg);
+        }
+
+        .medical-decoration-3 {
+            top: 30%;
+            right: 15%;
+            font-size: 120px;
+            opacity: 0.05;
+            transform: rotate(15deg);
+        }
+
+        /* Floating particles effect - brain cells */
+        .brain-particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: rgba(102, 126, 234, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        .container {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 249, 250, 0.98) 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
+                        0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+                        0 0 100px rgba(102, 126, 234, 0.1);
+            width: 100%;
+            max-width: 700px;
+            padding: 40px;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%) 1;
+            position: relative;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .header::before {
+            content: '🧠';
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            font-size: 4rem;
+            opacity: 0.15;
+            animation: floatIcon 4s ease-in-out infinite;
+        }
+
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0px) rotate(-5deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        .header h1 {
+            color: #1a1a2e;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: inherit;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input:hover,
+        .form-group select:hover {
+            border-color: #b8b8b8;
+        }
+
+        .helper-text {
+            color: #888;
+            font-size: 0.85rem;
+            margin-top: 4px;
+            font-style: italic;
+            display: block;
+        }
+
+        .helper-text-small {
+            color: #999;
+            font-size: 0.75rem;
+            margin-top: 3px;
+            font-style: italic;
+            display: block;
+        }
+
+        .bmi-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 10px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06),
+                        0 0 20px rgba(102, 126, 234, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bmi-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.03) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .section-label {
+            color: #333;
+            font-weight: 600;
+            font-size: 1rem;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .bmi-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .height-weight-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .form-group.half-width {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .height-inputs {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+            flex-wrap: wrap;
+        }
+
+        .height-inputs .form-group {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        #bmi {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 1.1rem;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%) !important;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3),
+                        0 0 30px rgba(102, 126, 234, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .submit-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5),
+                        0 0 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Medical icon decoration */
+        .medical-icon {
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.05;
+            z-index: 0;
+        }
+
+        .medical-icon-1 {
+            top: -50px;
+            right: -50px;
+        }
+
+        .medical-icon-2 {
+            bottom: -50px;
+            left: -50px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+                max-width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .height-weight-row {
+                flex-direction: column;
+            }
+            
+            .height-inputs {
+                flex-direction: column;
+            }
+            
+            .form-group.half-width {
+                min-width: 100%;
+            }
+        }
+
+        .preview-note {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #856404;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="preview-note">
+            ⚠️ PREVIEW MODE - This is a demo. Changes won't affect the main project until approved.
+        </div>
+        
+        <div class="header">
+            <h1>🧠 Brain Stroke Prediction</h1>
+            <p>Fill in the details below to assess your stroke risk</p>
+        </div>
+        
+        <form id="predictionForm" class="form-container">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="e.g., John Doe" required>
+                <small class="helper-text">Enter your full name or any identifier</small>
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" required>
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+                <small class="helper-text">Select your gender identity</small>
+            </div>
+
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" id="age" name="age" min="0" max="120" placeholder="e.g., 45" required>
+                <small class="helper-text">Enter age in years (Range: 0-120) | Common: 25-65 years</small>
+            </div>
+
+            <div class="form-group">
+                <label for="hypertension">Hypertension (High Blood Pressure)</label>
+                <select id="hypertension" name="hypertension" required>
+                    <option value="">Select</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+                <small class="helper-text">Have you been diagnosed with high blood pressure? (BP ≥ 140/90 mmHg)</small>
+            </div>
+
+            <div class="form-group">
+                <label for="heart_disease">Heart Disease</label>
+                <select id="heart_disease" name="heart_disease" required>
+                    <option value="">Select</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+                <small class="helper-text">Any history of coronary heart disease, angina, or heart attack?</small>
+            </div>
+
+            <div class="form-group">
+                <label for="ever_married">Ever Married</label>
+                <select id="ever_married" name="ever_married" required>
+                    <option value="">Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+                <small class="helper-text">Have you ever been married (includes divorced/widowed)?</small>
+            </div>
+
+            <div class="form-group">
+                <label for="work_type">Work Type</label>
+                <select id="work_type" name="work_type" required>
+                    <option value="">Select Work Type</option>
+                    <option value="Private">Private</option>
+                    <option value="Self-employed">Self-employed</option>
+                    <option value="children">Children</option>
+                    <option value="Govt_job">Govt_job</option>
+                    <option value="Never_worked">Never worked</option>
+                </select>
+                <small class="helper-text">Select your current employment status</small>
+            </div>
+
+            <div class="form-group">
+                <label for="Residence_type">Residence Type</label>
+                <select id="Residence_type" name="Residence_type" required>
+                    <option value="">Select</option>
+                    <option value="Urban">Urban</option>
+                    <option value="Rural">Rural</option>
+                </select>
+                <small class="helper-text">Do you live in an urban or rural area?</small>
+            </div>
+
+            <div class="form-group">
+                <label for="avg_glucose_level">Average Glucose Level (mg/dL)</label>
+                <input type="number" id="avg_glucose_level" name="avg_glucose_level" step="0.01" min="0" max="500" placeholder="e.g., 95.5" required>
+                <small class="helper-text">Normal: 70-100 | Pre-diabetic: 100-125 | Diabetic: >125</small>
+            </div>
+
+            <div class="bmi-section">
+                <label class="section-label">BMI Calculation</label>
+                <div class="bmi-input-group">
+                    <div class="height-weight-row">
+                        <div class="form-group half-width">
+                            <label for="height_unit">Height Unit</label>
+                            <select id="height_unit" name="height_unit">
+                                <option value="imperial">Feet & Inches</option>
+                                <option value="metric">Centimeters (cm)</option>
+                            </select>
+                        </div>
+                        <div id="height_imperial" class="height-inputs" style="flex: 1;">
+                            <div class="form-group half-width">
+                                <label for="height_feet">Height (Feet)</label>
+                                <input type="number" id="height_feet" name="height_feet" min="2" max="8" placeholder="e.g., 5" required>
+                                <small class="helper-text-small">Range: 2-8 feet</small>
+                            </div>
+                            <div class="form-group half-width">
+                                <label for="height_inches">Height (Inches)</label>
+                                <input type="number" id="height_inches" name="height_inches" min="0" max="11" placeholder="e.g., 8" required>
+                                <small class="helper-text-small">Range: 0-11 inches</small>
+                            </div>
+                        </div>
+                        <div id="height_metric" class="height-inputs" style="display: none; flex: 1;">
+                            <div class="form-group half-width">
+                                <label for="height_cm">Height (cm)</label>
+                                <input type="number" id="height_cm" name="height_cm" min="50" max="250" placeholder="e.g., 175">
+                                <small class="helper-text-small">Range: 50-250 cm | Common: 150-190 cm</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="height-weight-row">
+                        <div class="form-group half-width">
+                            <label for="weight_unit">Weight Unit</label>
+                            <select id="weight_unit" name="weight_unit">
+                                <option value="kg">Kilograms (kg)</option>
+                                <option value="lbs">Pounds (lbs)</option>
+                            </select>
+                        </div>
+                        <div class="form-group half-width">
+                            <label for="weight">Weight</label>
+                            <input type="number" id="weight" name="weight" step="0.1" min="0" max="500" placeholder="e.g., 70" required>
+                            <small class="helper-text-small" id="weight_hint">Range: 0-500 kg | Common: 50-100 kg</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bmi">BMI (Calculated Automatically)</label>
+                        <input type="number" id="bmi" name="bmi" step="0.1" min="0" readonly style="background-color: #f0f0f0; cursor: not-allowed;">
+                        <small class="helper-text">Underweight: &lt;18.5 | Normal: 18.5-24.9 | Overweight: 25-29.9 | Obese: ≥30</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="smoking_status">Smoking Status</label>
+                <select id="smoking_status" name="smoking_status" required>
+                    <option value="">Select</option>
+                    <option value="never smoked">Never smoked</option>
+                    <option value="Unknown">Unknown</option>
+                    <option value="smokes">Smokes</option>
+                    <option value="formerly smoked">Formerly smoked</option>
+                </select>
+                <small class="helper-text">Select your smoking history status</small>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit</button>
+        </form>
+    </div>
+    
+    <!-- Brain decoration elements -->
+    <div class="medical-decoration medical-decoration-1">🧠</div>
+    <div class="medical-decoration medical-decoration-2">🧠</div>
+    <div class="medical-decoration medical-decoration-3">⚕️</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('predictionForm');
+            const heightUnit = document.getElementById('height_unit');
+            const weightUnit = document.getElementById('weight_unit');
+            const heightImperial = document.getElementById('height_imperial');
+            const heightMetric = document.getElementById('height_metric');
+            const heightFeet = document.getElementById('height_feet');
+            const heightInches = document.getElementById('height_inches');
+            const heightCm = document.getElementById('height_cm');
+            const weightInput = document.getElementById('weight');
+            const weightHint = document.getElementById('weight_hint');
+            const bmiInput = document.getElementById('bmi');
+            
+            // Update weight hint and max value based on unit
+            function updateWeightHint() {
+                if (weightUnit.value === 'lbs') {
+                    weightHint.textContent = 'Range: 0-1100 lbs | Common: 110-220 lbs';
+                    weightInput.setAttribute('max', '1100');
+                    weightInput.setAttribute('placeholder', 'e.g., 154');
+                } else {
+                    weightHint.textContent = 'Range: 0-500 kg | Common: 50-100 kg';
+                    weightInput.setAttribute('max', '500');
+                    weightInput.setAttribute('placeholder', 'e.g., 70');
+                }
+            }
+            
+            // Function to calculate BMI
+            function calculateBMI() {
+                let heightInMeters = 0;
+                let weightInKg = 0;
+                
+                // Get height in meters
+                if (heightUnit.value === 'imperial') {
+                    const feet = parseFloat(heightFeet.value) || 0;
+                    const inches = parseFloat(heightInches.value) || 0;
+                    if (feet > 0 || inches > 0) {
+                        const totalInches = (feet * 12) + inches;
+                        heightInMeters = totalInches * 0.0254; // Convert inches to meters
+                    }
+                } else {
+                    const cm = parseFloat(heightCm.value) || 0;
+                    if (cm > 0) {
+                        heightInMeters = cm / 100; // Convert cm to meters
+                    }
+                }
+                
+                // Get weight in kg
+                const weight = parseFloat(weightInput.value) || 0;
+                if (weight > 0) {
+                    if (weightUnit.value === 'lbs') {
+                        weightInKg = weight * 0.453592; // Convert lbs to kg
+                    } else {
+                        weightInKg = weight;
+                    }
+                }
+                
+                // Calculate BMI: weight (kg) / height (m)²
+                if (heightInMeters > 0 && weightInKg > 0) {
+                    const bmi = weightInKg / (heightInMeters * heightInMeters);
+                    bmiInput.value = bmi.toFixed(1);
+                } else {
+                    bmiInput.value = '';
+                }
+            }
+            
+            // Handle height unit change
+            heightUnit.addEventListener('change', function() {
+                if (this.value === 'imperial') {
+                    heightImperial.style.display = 'flex';
+                    heightMetric.style.display = 'none';
+                    heightCm.removeAttribute('required');
+                    heightFeet.setAttribute('required', 'required');
+                    heightInches.setAttribute('required', 'required');
+                } else {
+                    heightImperial.style.display = 'none';
+                    heightMetric.style.display = 'block';
+                    heightFeet.removeAttribute('required');
+                    heightInches.removeAttribute('required');
+                    heightCm.setAttribute('required', 'required');
+                }
+                calculateBMI();
+            });
+            
+            // Update weight hint when unit changes
+            weightUnit.addEventListener('change', function() {
+                updateWeightHint();
+                calculateBMI();
+            });
+            
+            // Initialize weight hint
+            updateWeightHint();
+            
+            // Add event listeners for BMI calculation
+            heightFeet.addEventListener('input', calculateBMI);
+            heightInches.addEventListener('input', calculateBMI);
+            heightCm.addEventListener('input', calculateBMI);
+            weightInput.addEventListener('input', calculateBMI);
+            
+            // Form submission (demo - just shows alert)
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const bmiValue = parseFloat(bmiInput.value);
+                if (!bmiValue || bmiValue <= 0) {
+                    alert('Please enter height and weight to calculate BMI.');
+                    return;
+                }
+                const height = heightUnit.value === 'imperial' 
+                    ? `${heightFeet.value}'${heightInches.value}"` 
+                    : `${heightCm.value} cm`;
+                const weight = `${weightInput.value} ${weightUnit.value}`;
+                alert('This is a preview! Form data would be submitted in the actual application.\n\nHeight: ' + height + '\nWeight: ' + weight + '\nBMI: ' + bmiValue.toFixed(1));
+            });
+            
+            // Input validation
+            const inputs = form.querySelectorAll('input[type="number"]:not(#bmi)');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    if (this.value < 0) {
+                        this.value = 0;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+

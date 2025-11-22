@@ -1,0 +1,58 @@
+===============================================
+BRAIN STROKE PREDICTION APPLICATION
+===============================================
+
+QUICK START GUIDE:
+
+1. INSTALL DEPENDENCIES (if not already installed):
+   Open Command Prompt or PowerShell in this folder and run:
+   
+   pip install -r requirements.txt
+   
+   OR install manually:
+   pip install flask pandas numpy scikit-learn
+
+2. RUN THE APPLICATION:
+   
+   OPTION A - Double-click: run_app.bat (Windows)
+   OPTION B - Right-click: run_app.ps1 > Run with PowerShell
+   OPTION C - Command Line: python app.py
+
+3. OPEN IN BROWSER:
+   Once the server starts, open your web browser and go to:
+   http://localhost:5000
+
+4. USE THE APPLICATION:
+   - Fill in all the form fields
+   - Click "Submit"
+   - View your stroke risk prediction and prevention tips
+
+===============================================
+IMPORTANT NOTES:
+===============================================
+
+- The model has been trained and is ready to use (95.88% accuracy)
+- Make sure port 5000 is not being used by another application
+- The server will run until you press Ctrl+C in the terminal
+- All required files are present and verified
+
+===============================================
+TROUBLESHOOTING:
+===============================================
+
+If you get "ModuleNotFoundError":
+  - Run: pip install -r requirements.txt
+
+If port 5000 is in use:
+  - Edit app.py, change port=5000 to port=5001 (or another port)
+  - Update the URL in your browser accordingly
+
+If the model doesn't load:
+  - Make sure these files exist:
+    * stroke_model.pkl
+    * scaler.pkl
+    * label_encoders.pkl
+  - Run: python train_model.py to retrain the model
+
+===============================================
+
