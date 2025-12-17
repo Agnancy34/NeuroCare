@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stroke Prediction Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container result-container">
+        <div class="header">
+            <h1>🧠 Brain Stroke Prediction Result</h1>
+        </div>
+
+        <div class="result-box" id="resultBox">
+            <div class="result-icon" id="resultIcon">
+                <span class="icon">⚠️</span>
+            </div>
+            <h2 id="resultTitle">Analyzing...</h2>
+            <p class="probability" id="probabilityText"></p>
+            
+            <div class="prevention-section">
+                <h3>Prevention Tips</h3>
+                <ul class="prevention-list">
+                    <li>Maintain a healthy blood pressure (< 120/80 mmHg)</li>
+                    <li>Control blood sugar levels if you have diabetes</li>
+                    <li>Maintain a healthy BMI (18.5-24.9)</li>
+                    <li>Exercise regularly (at least 30 minutes daily)</li>
+                    <li>Quit smoking and limit alcohol consumption</li>
+                    <li>Eat a balanced diet rich in fruits and vegetables</li>
+                    <li>Manage stress through relaxation techniques</li>
+                    <li>Get regular health check-ups</li>
+                </ul>
+            </div>
+
+            <a href="/" class="back-btn"><span>Check Another Person</span></a>
+        </div>
+    </div>
+    
+    <!-- Brain decoration elements -->
+    <div class="medical-decoration medical-decoration-1">🧠</div>
+    <div class="medical-decoration medical-decoration-2">🧠</div>
+    <div class="medical-decoration medical-decoration-3">⚕️</div>
+
+    <script src="{{ url_for('static', filename='result.js') }}"></script>
+</body>
+</html>
+
